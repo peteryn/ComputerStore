@@ -3,6 +3,7 @@ package org.example.computerstore.services;
 import org.example.computerstore.dto.ComputerUserDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;
+import org.example.computerstore.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,9 +14,12 @@ import org.springframework.stereotype.Service;
 public class ComputerUserAccountService {
     private final ComputerUserRepository computerUserRepository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final JwtUtil jwtUtil;
 
-    public ComputerUserAccountService(ComputerUserRepository computerUserRepository) {
+
+    public ComputerUserAccountService(ComputerUserRepository computerUserRepository, JwtUtil jwtUtil) {
         this.computerUserRepository = computerUserRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     public ComputerUser registerComputerUser(ComputerUserDTO userDTO) {
@@ -32,7 +36,7 @@ public class ComputerUserAccountService {
             return "Failure";
         }
         if (encoder.matches(userDTO.getPassword(), cu.getPassword())) {
-            return "success";
+            return jwtUtil.createToken(userDTO.getUsername());
         }
         return "Failure2";
     }
