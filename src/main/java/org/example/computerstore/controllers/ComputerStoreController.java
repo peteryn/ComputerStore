@@ -21,7 +21,6 @@ public class ComputerStoreController {
 
     @PostMapping("/register")
     public ResponseEntity<String> createUser(@RequestBody ComputerUserDTO user) {
-        System.out.println("In register");
         ComputerUser response = computerUserAccountService.registerComputerUser(user);
         return new ResponseEntity<>(response.getUsername(), HttpStatus.CREATED);
     }
@@ -33,9 +32,7 @@ public class ComputerStoreController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody ComputerUserDTO user) {
-        System.out.println("In login");
         String response = computerUserAccountService.loginUser(user);
-        System.out.println(response);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

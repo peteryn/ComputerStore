@@ -11,6 +11,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Base64;
+import java.util.Date;
 import java.util.function.Function;
 
 @Component
@@ -18,8 +19,15 @@ public class JwtUtil {
 
     private final String secret = "3r9iTTOMAswgv7fAObC3KltdTzmeOfw4xwBYXgWdkjU=";
 
+    private static final long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    private static final long TEST_TOKEN_EXPIRATION_TIME = 60 * 1000;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -35,36 +43,26 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(username)
                 .signWith(getKey())
+//                .expiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + TEST_TOKEN_EXPIRATION_TIME))
                 .compact();
     }
 
     private SecretKey getKey() {
-//        byte[] keyBytes = secret.getBytes();
-//        return Keys.hmacShaKeyFor(keyBytes);
-//        var tempKey = Jwts.SIG.HS256.key().build();
-//        String encodedKey = Base64.getEncoder().encodeToString(tempKey.getEncoded());
-//        System.out.println("KEY");
-//        System.out.println(encodedKey);
-//        return tempKey;
-
         byte[] decodedKey = Base64.getDecoder().decode(secret);
         SecretKey key = Keys.hmacShaKeyFor(decodedKey);
         return key;
     }
 
     public boolean validateToken(String token, String username) {
-//        try {
-//            Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
-//
-//            //OK, we can trust this JWT
-//            return true;
-//
-//        } catch (JwtException e) {
-//            //don't trust the JWT!
-//            return false;
-//        }
-
         final String extractedUsername = extractUsername(token);
+        final Date extractedExpiration = extractExpiration(token);
+        if (extractedUsername == null || extractedExpiration == null) {
+            return false;
+        }
+        if (extractedExpiration.before(new Date())) {
+            return false;
+        }
         return extractedUsername.equals(username);
     }
 }
