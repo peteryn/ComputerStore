@@ -27,6 +27,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(new AntPathRequestMatcher("/register", "POST")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/login", "POST")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/spring", "GET")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

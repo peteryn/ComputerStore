@@ -35,4 +35,9 @@ public class ComputerStoreController {
         String response = computerUserAccountService.loginUser(user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/api/spring")
+    public ResponseEntity<String> api() {
+        return new ResponseEntity<>("This is a api", HttpStatus.OK);
+    }
 }

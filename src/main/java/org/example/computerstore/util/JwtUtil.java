@@ -20,7 +20,7 @@ public class JwtUtil {
     private final String secret = "3r9iTTOMAswgv7fAObC3KltdTzmeOfw4xwBYXgWdkjU=";
 
     private static final long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
-    private static final long TEST_TOKEN_EXPIRATION_TIME = 60 * 1000;
+    private static final long TEST_TOKEN_EXPIRATION_TIME = 5 * 60 * 1000;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
