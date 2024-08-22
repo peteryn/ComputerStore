@@ -25,8 +25,8 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(new AntPathRequestMatcher("/register", "POST")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/login", "POST")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/register", "POST")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/login", "POST")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/spring", "GET")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session

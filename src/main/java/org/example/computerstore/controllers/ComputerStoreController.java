@@ -5,12 +5,10 @@ import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.services.ComputerUserAccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class ComputerStoreController {
 
     private final ComputerUserAccountService computerUserAccountService;
@@ -36,7 +34,7 @@ public class ComputerStoreController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/api/spring")
+    @GetMapping("/spring")
     public ResponseEntity<String> api() {
         return new ResponseEntity<>("This is a api", HttpStatus.OK);
     }
