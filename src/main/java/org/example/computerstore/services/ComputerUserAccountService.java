@@ -1,6 +1,7 @@
 package org.example.computerstore.services;
 
 import org.example.computerstore.dto.ComputerUserDTO;
+import org.example.computerstore.dto.UserRequestDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;
 import org.example.computerstore.util.JwtUtil;
@@ -22,7 +23,7 @@ public class ComputerUserAccountService {
         this.jwtUtil = jwtUtil;
     }
 
-    public ComputerUser registerComputerUser(ComputerUserDTO userDTO) {
+    public ComputerUser registerComputerUser(UserRequestDTO userDTO) {
         String pw = userDTO.getPassword();
         String encoded = encoder.encode(pw);
         ComputerUser cu = new ComputerUser(userDTO.getUsername(), encoded);

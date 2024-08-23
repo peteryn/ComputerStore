@@ -5,6 +5,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
+@Order(Ordered.LOWEST_PRECEDENCE - 100)
 public class JwtUtil {
 
     private final String secret = "3r9iTTOMAswgv7fAObC3KltdTzmeOfw4xwBYXgWdkjU=";
