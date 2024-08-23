@@ -1,6 +1,6 @@
 package org.example.computerstore.services;
 
-import org.example.computerstore.dto.ComputerUserDTO;
+import jakarta.validation.Valid;
 import org.example.computerstore.dto.UserRequestDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;
@@ -8,8 +8,9 @@ import org.example.computerstore.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ComputerUserAccountService {
@@ -31,15 +32,15 @@ public class ComputerUserAccountService {
         return result;
     }
 
-    public String loginUser(ComputerUserDTO userDTO) {
+    public Optional<String> loginUser(UserRequestDTO userDTO) {
         ComputerUser cu = computerUserRepository.findByUsername(userDTO.getUsername());
         if (cu == null) {
-            return "Failure";
+            return Optional.empty();
         }
         if (encoder.matches(userDTO.getPassword(), cu.getPassword())) {
-            return jwtUtil.createToken(userDTO.getUsername());
+            return Optional.of(jwtUtil.createToken(userDTO.getUsername()));
         }
-        return "Failure2";
+        return Optional.empty();
     }
 
     @Bean

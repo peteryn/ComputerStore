@@ -1,5 +1,6 @@
 package org.example.computerstore.config;
 
+import jakarta.servlet.DispatcherType;
 import org.example.computerstore.util.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,12 +26,15 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
+                        // returns 400 instead 403 when DTO is not valid
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/register", "POST")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/login", "POST")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/spring", "GET")).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
