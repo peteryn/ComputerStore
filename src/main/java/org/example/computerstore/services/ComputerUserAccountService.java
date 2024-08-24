@@ -24,12 +24,16 @@ public class ComputerUserAccountService {
         this.jwtUtil = jwtUtil;
     }
 
-    public ComputerUser registerComputerUser(UserRequestDTO userDTO) {
+    public Optional<ComputerUser> registerComputerUser(UserRequestDTO userDTO) {
         String pw = userDTO.getPassword();
         String encoded = encoder.encode(pw);
-        ComputerUser cu = new ComputerUser(userDTO.getUsername(), encoded);
-        ComputerUser result = computerUserRepository.save(cu);
-        return result;
+        try {
+            ComputerUser cu = new ComputerUser(userDTO.getUsername(), encoded);
+            ComputerUser result = computerUserRepository.save(cu);
+            return Optional.of(result);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<String> loginUser(UserRequestDTO userDTO) {

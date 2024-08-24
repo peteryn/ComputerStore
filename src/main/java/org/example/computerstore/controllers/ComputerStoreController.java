@@ -25,8 +25,12 @@ public class ComputerStoreController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO user) {
-        ComputerUser response = computerUserAccountService.registerComputerUser(user);
-        return new ResponseEntity<>(new UserResponseDTO(response.getUsername()), HttpStatus.CREATED);
+        Optional<ComputerUser> response = computerUserAccountService.registerComputerUser(user);
+        if (response.isPresent()) {
+            return new ResponseEntity<>(new UserResponseDTO(response.get().getUsername()), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(new UserResponseDTO(""), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/login")
