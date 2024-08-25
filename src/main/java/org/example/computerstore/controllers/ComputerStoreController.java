@@ -1,5 +1,7 @@
 package org.example.computerstore.controllers;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.example.computerstore.dto.UserJwtResponseDTO;
 import org.example.computerstore.dto.UserRequestDTO;
@@ -34,10 +36,14 @@ public class ComputerStoreController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserJwtResponseDTO> login(@Valid @RequestBody UserRequestDTO user) {
-        Optional<String> response = computerUserAccountService.loginUser(user);
-        return response.map(s ->
-                new ResponseEntity<>(new UserJwtResponseDTO(s), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
+    public ResponseEntity<UserJwtResponseDTO> login(@Valid @RequestBody UserRequestDTO user, HttpServletResponse response) {
+        Optional<String> loginResponse = computerUserAccountService.loginUser(user);
+        if (loginResponse.isPresent()) {
+            Cookie cookie = new Cookie("JWT", loginResponse.get());
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+            return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new UserJwtResponseDTO("false"), HttpStatus.BAD_REQUEST);
     }
 }

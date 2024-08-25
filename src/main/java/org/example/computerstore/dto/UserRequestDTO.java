@@ -11,7 +11,7 @@ public class UserRequestDTO {
     }
 
     @NotBlank(message = "email is required")
-    @Email(message = "Username must be a valid email", regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
+    @Email(message = "Username must be a valid email")
     private String username;
 
     @NotBlank
