@@ -2,6 +2,7 @@ package org.example.computerstore.util;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.computerstore.services.ComputerUserDetailsService;
@@ -29,29 +30,46 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        String username = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt); // maybe check for badly formed JWTs here
+        if ("/api/login".equals(request.getServletPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if ("/api/register".equals(request.getServletPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        var x = request.getCookies();
+        Cookie jwtCookie = null;
+        for (var cookie : x) {
+            if (cookie.getName().equals("JWT")) {
+                jwtCookie = cookie;
+                break;
+            }
+        }
 
-            UserDetails userDetails = this.computerUserDetailsService.loadUserByUsername(username);
+        if (jwtCookie == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } else {
+            String username = null;
+            String jwt = jwtCookie.getValue();
 
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+            username = jwtUtil.extractUsername(jwt); // maybe check for badly formed JWTs here
 
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                UserDetails userDetails = this.computerUserDetailsService.loadUserByUsername(username);
+
+                if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
             }
         }
         filterChain.doFilter(request, response);

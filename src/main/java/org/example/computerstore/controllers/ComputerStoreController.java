@@ -41,9 +41,15 @@ public class ComputerStoreController {
         if (loginResponse.isPresent()) {
             Cookie cookie = new Cookie("JWT", loginResponse.get());
             cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             response.addCookie(cookie);
             return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
         }
         return new ResponseEntity<>(new UserJwtResponseDTO("false"), HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/protected")
+    public ResponseEntity<UserJwtResponseDTO> protectedUser() {
+        return new ResponseEntity<>(new UserJwtResponseDTO("Protected Data"), HttpStatus.OK);
     }
 }
