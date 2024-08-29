@@ -39,8 +39,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        var x = request.getCookies();
+        var x = request.getCookies(); // todo check for NPE
         Cookie jwtCookie = null;
+        if (x == null) {
+            System.out.println("The request had no cookies");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         for (var cookie : x) {
             if (cookie.getName().equals("JWT")) {
                 jwtCookie = cookie;

@@ -52,4 +52,20 @@ public class ComputerStoreController {
     public ResponseEntity<UserJwtResponseDTO> protectedUser() {
         return new ResponseEntity<>(new UserJwtResponseDTO("Protected Data"), HttpStatus.OK);
     }
+
+    @GetMapping("/check")
+    public ResponseEntity<UserJwtResponseDTO> checkUser() {
+        return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<UserJwtResponseDTO> logout(HttpServletResponse response) {
+        System.out.println("In logout");
+        Cookie cookie = new Cookie("JWT", "");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+        return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
+    }
 }
