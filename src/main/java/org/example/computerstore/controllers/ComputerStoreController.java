@@ -4,7 +4,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.example.computerstore.dto.UserJwtResponseDTO;
-import org.example.computerstore.dto.UserRequestDTO;
+import org.example.computerstore.dto.UserCreateDTO;
+import org.example.computerstore.dto.UserLoginDTO;
 import org.example.computerstore.dto.UserResponseDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.services.ComputerUserAccountService;
@@ -26,7 +27,7 @@ public class ComputerStoreController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO user) {
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO user) {
         Optional<ComputerUser> response = computerUserAccountService.registerComputerUser(user);
         if (response.isPresent()) {
             return new ResponseEntity<>(new UserResponseDTO(response.get().getUsername()), HttpStatus.CREATED);
@@ -36,7 +37,7 @@ public class ComputerStoreController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserJwtResponseDTO> login(@Valid @RequestBody UserRequestDTO user, HttpServletResponse response) {
+    public ResponseEntity<UserJwtResponseDTO> login(@RequestBody @Valid UserLoginDTO user, HttpServletResponse response) {
         Optional<String> loginResponse = computerUserAccountService.loginUser(user);
         if (loginResponse.isPresent()) {
             Cookie cookie = new Cookie("JWT", loginResponse.get());

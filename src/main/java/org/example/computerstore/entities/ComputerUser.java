@@ -1,6 +1,7 @@
 package org.example.computerstore.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class ComputerUser {
@@ -13,11 +14,16 @@ public class ComputerUser {
     private String username;
     private String password;
 
+    private String firstName;
+    private String lastName;
+
     protected ComputerUser() {}
 
-    public ComputerUser(String username, String password) {
+    public ComputerUser(String username, String password, String firstName, String lastName) {
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public long getId() {
@@ -31,6 +37,15 @@ public class ComputerUser {
     public String getUsername() {
         return username;
     }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
 
     @Override
     public String toString() {

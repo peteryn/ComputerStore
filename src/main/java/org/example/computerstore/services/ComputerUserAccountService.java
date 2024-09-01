@@ -1,7 +1,7 @@
 package org.example.computerstore.services;
 
-import jakarta.validation.Valid;
-import org.example.computerstore.dto.UserRequestDTO;
+import org.example.computerstore.dto.UserCreateDTO;
+import org.example.computerstore.dto.UserLoginDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;
 import org.example.computerstore.util.JwtUtil;
@@ -24,11 +24,11 @@ public class ComputerUserAccountService {
         this.jwtUtil = jwtUtil;
     }
 
-    public Optional<ComputerUser> registerComputerUser(UserRequestDTO userDTO) {
+    public Optional<ComputerUser> registerComputerUser(UserCreateDTO userDTO) {
         String pw = userDTO.getPassword();
         String encoded = encoder.encode(pw);
         try {
-            ComputerUser cu = new ComputerUser(userDTO.getUsername(), encoded);
+            ComputerUser cu = new ComputerUser(userDTO.getUsername(), encoded, userDTO.getFirstName(), userDTO.getLastName());
             ComputerUser result = computerUserRepository.save(cu);
             return Optional.of(result);
         } catch (Exception e) {
@@ -36,7 +36,7 @@ public class ComputerUserAccountService {
         }
     }
 
-    public Optional<String> loginUser(UserRequestDTO userDTO) {
+    public Optional<String> loginUser(UserLoginDTO userDTO) {
         ComputerUser cu = computerUserRepository.findByUsername(userDTO.getUsername());
         if (cu == null) {
             return Optional.empty();

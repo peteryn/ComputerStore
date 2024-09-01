@@ -3,9 +3,10 @@ package org.example.computerstore.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
-public class UserRequestDTO {
-    public UserRequestDTO(String username, String password) {
+public class UserCreateDTO {
+    public UserCreateDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -18,6 +19,31 @@ public class UserRequestDTO {
     @Pattern(message = "Please enter a password with at least 1 uppercase, 1 lowercase, and number",
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
     private String password;
+
+    @NotBlank
+    @Size(min = 2, max = 32)
+    private String firstName;
+
+    public @NotBlank @Size(min = 2, max = 32) String getLastName() {
+        return lastName;
+    }
+
+    public @NotBlank @Size(min = 2, max = 32) String getFirstName() {
+        return firstName;
+    }
+
+    public void setLastName(@NotBlank @Size(min = 2, max = 32) String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setFirstName(@NotBlank @Size(min = 2, max = 32) String firstName) {
+        this.firstName = firstName;
+    }
+
+    @NotBlank
+    @Size(min = 2, max = 32)
+    private String lastName;
+
 
     public String getUsername() {
         return username;
