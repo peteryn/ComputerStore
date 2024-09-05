@@ -51,4 +51,9 @@ public class ComputerUserAccountService {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    public void deleteUser(String userName) {
+        ComputerUser cu = computerUserRepository.findByUsername(userName);
+        computerUserRepository.delete(cu);
+    }
 }

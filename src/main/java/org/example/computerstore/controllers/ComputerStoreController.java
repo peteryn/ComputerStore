@@ -9,6 +9,7 @@ import org.example.computerstore.dto.UserLoginDTO;
 import org.example.computerstore.dto.UserResponseDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.services.ComputerUserAccountService;
+import org.example.computerstore.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,11 @@ import java.util.Optional;
 public class ComputerStoreController {
 
     private final ComputerUserAccountService computerUserAccountService;
+    private final JwtUtil jwtUtil;
 
-    public ComputerStoreController(final ComputerUserAccountService computerUserAccountService) {
+    public ComputerStoreController(final ComputerUserAccountService computerUserAccountService, JwtUtil jwtUtil) {
         this.computerUserAccountService = computerUserAccountService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -69,5 +72,13 @@ public class ComputerStoreController {
         cookie.setSecure(true);
         response.addCookie(cookie);
         return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteUser(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, HttpServletResponse response) {
+        if (myCookie != null) {
+            String username = jwtUtil.extractUsername(myCookie);
+            computerUserAccountService.deleteUser(username);
+        }
     }
 }
