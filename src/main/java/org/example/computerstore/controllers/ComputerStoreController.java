@@ -3,10 +3,8 @@ package org.example.computerstore.controllers;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.example.computerstore.dto.UserJwtResponseDTO;
-import org.example.computerstore.dto.UserCreateDTO;
-import org.example.computerstore.dto.UserLoginDTO;
-import org.example.computerstore.dto.UserResponseDTO;
+import org.apache.catalina.User;
+import org.example.computerstore.dto.*;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.services.ComputerUserAccountService;
 import org.example.computerstore.util.JwtUtil;
@@ -79,6 +77,28 @@ public class ComputerStoreController {
         if (myCookie != null) {
             String username = jwtUtil.extractUsername(myCookie);
             computerUserAccountService.deleteUser(username);
+        }
+    }
+
+    @GetMapping("/details")
+    public UserDetailsDTO getDetails(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie) {
+        if (myCookie != null) {
+            String username = jwtUtil.extractUsername(myCookie);
+            Optional<ComputerUser> cu = computerUserAccountService.getUserInfo(username);
+            if (cu.isPresent()) {
+                return new UserDetailsDTO(cu.get().getFirstName(), cu.get().getLastName());
+            } else {
+                return new UserDetailsDTO("", "");
+            }
+        }
+        return new UserDetailsDTO("", "");
+    }
+
+    @PutMapping("/update")
+    public void updateDetails(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserDetailsDTO userInfo) {
+        if (myCookie != null) {
+            String username = jwtUtil.extractUsername(myCookie);
+            computerUserAccountService.updateUserInfo(username, userInfo.getFirstName(), userInfo.getLastName());
         }
     }
 }

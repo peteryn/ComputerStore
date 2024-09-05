@@ -1,6 +1,7 @@
 package org.example.computerstore.services;
 
 import org.example.computerstore.dto.UserCreateDTO;
+import org.example.computerstore.dto.UserDetailsDTO;
 import org.example.computerstore.dto.UserLoginDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;
@@ -52,8 +53,24 @@ public class ComputerUserAccountService {
         return new BCryptPasswordEncoder();
     }
 
-    public void deleteUser(String userName) {
-        ComputerUser cu = computerUserRepository.findByUsername(userName);
+    public void deleteUser(String username) {
+        ComputerUser cu = computerUserRepository.findByUsername(username);
         computerUserRepository.delete(cu);
+    }
+
+    public Optional<ComputerUser> getUserInfo(String username) {
+        ComputerUser cu = computerUserRepository.findByUsername(username);
+        if (cu == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(cu);
+        }
+    }
+
+    public void updateUserInfo(String username, String firstName, String lastName) {
+        ComputerUser cu = computerUserRepository.findByUsername(username);
+        cu.setFirstName(firstName);
+        cu.setLastName(lastName);
+        computerUserRepository.save(cu);
     }
 }
