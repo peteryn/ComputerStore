@@ -43,6 +43,7 @@ public class ComputerStoreController {
             Cookie cookie = new Cookie("JWT", loginResponse.get());
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
+            cookie.setMaxAge(5*60);
             response.addCookie(cookie);
             return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
         }
