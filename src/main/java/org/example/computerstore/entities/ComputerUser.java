@@ -50,6 +50,10 @@ public class ComputerUser {
 
     public void setLastName(String lastName) {this.lastName = lastName;}
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "ComputerUser [id=" + id + ", username=" + username + ", password=" + password + "]";

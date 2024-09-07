@@ -101,4 +101,14 @@ public class ComputerStoreController {
             computerUserAccountService.updateUserInfo(username, userInfo.getFirstName(), userInfo.getLastName());
         }
     }
+
+    @PutMapping("/changePassword")
+    public void changePassword(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserPasswordUpdateDTO userPasswordUpdateDTO, HttpServletResponse response) {
+        System.out.println("in change password");
+        if (myCookie != null) {
+            String username = jwtUtil.extractUsername(myCookie);
+            // remove JWT cookie in response
+            computerUserAccountService.updatePassword(username, userPasswordUpdateDTO.getOldPassword(), userPasswordUpdateDTO.getNewPassword());
+        }
+    }
 }
