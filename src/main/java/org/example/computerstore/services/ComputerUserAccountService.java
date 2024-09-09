@@ -53,9 +53,13 @@ public class ComputerUserAccountService {
         return new BCryptPasswordEncoder();
     }
 
-    public void deleteUser(String username) {
+    public boolean deleteUser(String username, String password) {
         ComputerUser cu = computerUserRepository.findByUsername(username);
-        computerUserRepository.delete(cu);
+        if (encoder.matches(password, cu.getPassword())) {
+            computerUserRepository.delete(cu);
+            return true;
+        }
+        return false;
     }
 
     public Optional<ComputerUser> getUserInfo(String username) {

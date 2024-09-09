@@ -73,10 +73,20 @@ public class ComputerStoreController {
     }
 
     @DeleteMapping("/delete")
-    public void deleteUser(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, HttpServletResponse response) {
+    public void deleteUser(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserPasswordDTO userPassword, HttpServletResponse response) {
         if (myCookie != null) {
             String username = jwtUtil.extractUsername(myCookie);
-            computerUserAccountService.deleteUser(username);
+            boolean result = computerUserAccountService.deleteUser(username, userPassword.getPassword());
+            if (result) {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                Cookie cookie = new Cookie("JWT", "");
+                cookie.setMaxAge(0);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                response.addCookie(cookie);
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            }
         }
     }
 
