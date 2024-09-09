@@ -21,29 +21,22 @@ public class UserCreateDTO {
     private String password;
 
     @NotBlank
-    @Size(min = 2, max = 32)
+    @Size(min = 1, max = 32)
     private String firstName;
 
-    public @NotBlank @Size(min = 2, max = 32) String getLastName() {
+    @NotBlank
+    @Size(min = 1, max = 32)
+    public String getLastName() {
         return lastName;
     }
 
-    public @NotBlank @Size(min = 2, max = 32) String getFirstName() {
+    public @NotBlank @Size(min = 1, max = 32) String getFirstName() {
         return firstName;
     }
 
-    public void setLastName(@NotBlank @Size(min = 2, max = 32) String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setFirstName(@NotBlank @Size(min = 2, max = 32) String firstName) {
-        this.firstName = firstName;
-    }
-
     @NotBlank
-    @Size(min = 2, max = 32)
+    @Size(min = 1, max = 32)
     private String lastName;
-
 
     public String getUsername() {
         return username;
