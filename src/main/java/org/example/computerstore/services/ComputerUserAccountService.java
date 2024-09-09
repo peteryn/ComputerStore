@@ -81,7 +81,6 @@ public class ComputerUserAccountService {
     public void updatePassword(String username, String oldPassword, String newPassword) {
         ComputerUser cu = computerUserRepository.findByUsername(username);
         if (encoder.matches(oldPassword, cu.getPassword())) {
-            System.out.println("Old passwords match");
             cu.setPassword(encoder.encode(newPassword));
             computerUserRepository.save(cu);
         }

@@ -3,7 +3,6 @@ package org.example.computerstore.controllers;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.example.computerstore.dto.*;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.services.ComputerUserAccountService;
@@ -44,7 +43,7 @@ public class ComputerStoreController {
             Cookie cookie = new Cookie("JWT", loginResponse.get());
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
-            cookie.setMaxAge(5*60);
+            cookie.setMaxAge(5 * 60);
             response.addCookie(cookie);
             return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
         }
@@ -63,62 +62,50 @@ public class ComputerStoreController {
 
     @PostMapping("/logout")
     public ResponseEntity<UserJwtResponseDTO> logout(HttpServletResponse response) {
-        System.out.println("In logout");
-        Cookie cookie = new Cookie("JWT", "");
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        response.addCookie(cookie);
+        response.addCookie(createExpiredCookie());
         return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
     public void deleteUser(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserPasswordDTO userPassword, HttpServletResponse response) {
-        if (myCookie != null) {
-            String username = jwtUtil.extractUsername(myCookie);
-            boolean result = computerUserAccountService.deleteUser(username, userPassword.getPassword());
-            if (result) {
-                response.setStatus(HttpStatus.NO_CONTENT.value());
-                Cookie cookie = new Cookie("JWT", "");
-                cookie.setMaxAge(0);
-                cookie.setHttpOnly(true);
-                cookie.setSecure(true);
-                response.addCookie(cookie);
-            } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            }
+        String username = jwtUtil.extractUsername(myCookie);
+        boolean result = computerUserAccountService.deleteUser(username, userPassword.getPassword());
+        if (result) {
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+            response.addCookie(createExpiredCookie());
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
     }
 
     @GetMapping("/details")
     public UserDetailsDTO getDetails(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie) {
-        if (myCookie != null) {
-            String username = jwtUtil.extractUsername(myCookie);
-            Optional<ComputerUser> cu = computerUserAccountService.getUserInfo(username);
-            if (cu.isPresent()) {
-                return new UserDetailsDTO(cu.get().getFirstName(), cu.get().getLastName());
-            } else {
-                return new UserDetailsDTO("", "");
-            }
+        String username = jwtUtil.extractUsername(myCookie);
+        Optional<ComputerUser> cu = computerUserAccountService.getUserInfo(username);
+        if (cu.isPresent()) {
+            return new UserDetailsDTO(cu.get().getFirstName(), cu.get().getLastName());
+        } else {
+            return new UserDetailsDTO("", "");
         }
-        return new UserDetailsDTO("", "");
     }
 
     @PutMapping("/update")
     public void updateDetails(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserDetailsDTO userInfo) {
-        if (myCookie != null) {
-            String username = jwtUtil.extractUsername(myCookie);
-            computerUserAccountService.updateUserInfo(username, userInfo.getFirstName(), userInfo.getLastName());
-        }
+        String username = jwtUtil.extractUsername(myCookie);
+        computerUserAccountService.updateUserInfo(username, userInfo.getFirstName(), userInfo.getLastName());
     }
 
     @PutMapping("/changePassword")
     public void changePassword(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserPasswordUpdateDTO userPasswordUpdateDTO, HttpServletResponse response) {
-        System.out.println("in change password");
-        if (myCookie != null) {
-            String username = jwtUtil.extractUsername(myCookie);
-            // remove JWT cookie in response
-            computerUserAccountService.updatePassword(username, userPasswordUpdateDTO.getOldPassword(), userPasswordUpdateDTO.getNewPassword());
-        }
+        String username = jwtUtil.extractUsername(myCookie);
+        computerUserAccountService.updatePassword(username, userPasswordUpdateDTO.getOldPassword(), userPasswordUpdateDTO.getNewPassword());
+    }
+
+    private Cookie createExpiredCookie() {
+        Cookie cookie = new Cookie("JWT", "");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        return cookie;
     }
 }
