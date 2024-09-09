@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.Optional;
 
 @RestController
@@ -50,11 +49,6 @@ public class ComputerStoreController {
         return new ResponseEntity<>(new UserJwtResponseDTO("false"), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/protected")
-    public ResponseEntity<UserJwtResponseDTO> protectedUser() {
-        return new ResponseEntity<>(new UserJwtResponseDTO("Protected Data"), HttpStatus.OK);
-    }
-
     @GetMapping("/check")
     public ResponseEntity<UserJwtResponseDTO> checkUser() {
         return new ResponseEntity<>(new UserJwtResponseDTO("true"), HttpStatus.OK);
@@ -89,13 +83,13 @@ public class ComputerStoreController {
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping("/details")
     public void updateDetails(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserDetailsDTO userInfo) {
         String username = jwtUtil.extractUsername(myCookie);
         computerUserAccountService.updateUserInfo(username, userInfo.getFirstName(), userInfo.getLastName());
     }
 
-    @PutMapping("/changePassword")
+    @PutMapping("/change-password")
     public void changePassword(@CookieValue(value = "JWT", defaultValue = "defaultValue") String myCookie, @RequestBody UserPasswordUpdateDTO userPasswordUpdateDTO, HttpServletResponse response) {
         String username = jwtUtil.extractUsername(myCookie);
         computerUserAccountService.updatePassword(username, userPasswordUpdateDTO.getOldPassword(), userPasswordUpdateDTO.getNewPassword());
