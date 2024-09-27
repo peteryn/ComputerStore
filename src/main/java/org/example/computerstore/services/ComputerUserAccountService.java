@@ -1,7 +1,6 @@
 package org.example.computerstore.services;
 
 import org.example.computerstore.dto.UserCreateDTO;
-import org.example.computerstore.dto.UserDetailsDTO;
 import org.example.computerstore.dto.UserLoginDTO;
 import org.example.computerstore.entities.ComputerUser;
 import org.example.computerstore.respositories.ComputerUserRepository;

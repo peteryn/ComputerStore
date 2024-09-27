@@ -1,7 +1,6 @@
 package org.example.computerstore.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 
 @Entity
 public class ComputerUser {

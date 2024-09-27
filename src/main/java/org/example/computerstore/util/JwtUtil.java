@@ -1,17 +1,13 @@
 package org.example.computerstore.util;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
@@ -22,7 +18,7 @@ public class JwtUtil {
 
     private final String secret = "3r9iTTOMAswgv7fAObC3KltdTzmeOfw4xwBYXgWdkjU=";
 
-    private static final long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    // private static final long TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
     private static final long TEST_TOKEN_EXPIRATION_TIME = 5 * 60 * 1000;
 
     public String extractUsername(String token) {
