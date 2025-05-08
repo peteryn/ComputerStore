@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>ComputerStore</name>
     <description>ComputerStore</description>
+     <packaging>war</packaging> 
     <url/>
     <licenses>
         <license/>
@@ -97,6 +98,7 @@
     </dependencies>
 
     <build>
+            <!-- <finalName>userauthdemo</finalName> -->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -104,5 +106,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
